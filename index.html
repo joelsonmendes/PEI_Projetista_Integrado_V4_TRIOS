@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="PEI Projetista Integrado: plataforma didática completa para desenvolvimento do Projeto Elétrico Industrial.">
+<title>PEI Projetista Integrado V4 • Equipes | Projetos Elétricos Industriais</title>
+<link rel="stylesheet" href="styles.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <img src="assets/senai_logo.webp" alt="SENAI">
+      <div><strong>PEI Projetista Integrado V4 • Equipes</strong><small>Projetos Elétricos Industriais • Plataforma da equipe</small></div>
+    </div>
+    <div class="top-actions">
+      <button class="btn" id="themeBtn">Tema</button>
+      <button class="btn" id="saveBtn">Salvar</button>
+      <button class="btn" id="exportBtn">Exportar JSON</button>
+      <label class="btn file-btn">Importar JSON<input id="importProject" type="file" accept=".json,application/json"></label>
+      <button class="btn primary" id="pdfTopBtn">Gerar projeto PDF</button>
+      <button class="btn danger" id="resetProjectBtn">Resetar projeto</button>
+    </div>
+  </div>
+</header>
+
+<main class="app-shell">
+  <section class="hero">
+    <div class="hero-kicker">Projeto em trio • empresa fictícia • ambiente único</div>
+    <h1>Da empresa fictícia ao projeto elétrico industrial completo</h1>
+    <p>O trio forma uma empresa fictícia, recebe um código único, divide responsabilidades, escolhe e justifica os acionamentos, desenvolve os cálculos e entrega memorial descritivo, memória de cálculo, quadro de cargas, lista de materiais e o projeto completo em PDF.</p>
+    <div class="hero-metrics">
+      <div class="hero-stat"><strong id="heroCode">SEM CÓDIGO</strong><span>Projeto da equipe</span></div>
+      <div class="hero-stat"><strong id="heroStudent">Equipe</strong><span>Empresa projetista</span></div>
+      <div class="hero-stat"><strong id="heroProgress">0%</strong><span>Conclusão</span></div>
+      <div class="hero-stat"><strong id="heroTotal">R$ 0,00</strong><span>Materiais</span></div>
+    </div>
+  </section>
+
+  <div class="workspace">
+    <aside class="sidebar">
+      <div class="side-title">Desenvolvimento</div>
+      <nav id="nav">
+        <button class="active" data-page="dashboard">1. Visão geral</button>
+        <button data-page="projeto">2. Código e cliente</button>
+        <button data-page="cargas">3. Cargas geradas</button>
+        <button data-page="acionamentos">4. Engenharia de acionamentos</button>
+        <button data-page="calculadora">5. Calculadora industrial</button>
+        <button data-page="qgbt">6. QGBT</button>
+        <button data-page="ccm">7. CCM</button>
+        <button data-page="subestacao">8. Subestação</button>
+        <button data-page="luminotecnico">9. Luminotécnico</button>
+        <button data-page="spda">10. SPDA + BEP + terra</button>
+        <button data-page="materiais">11. Materiais e orçamento</button>
+        <button data-page="memcalc">12. Memorial de cálculo</button>
+        <button data-page="memdesc">13. Memorial descritivo</button>
+        <button data-page="pranchas">14. Pranchas</button>
+        <button data-page="entrega">15. Conferência e PDF</button>
+      </nav>
+      <div class="progress-track"><span id="sideProgress"></span></div>
+      <small id="sideProgressLabel">0% concluído</small>
+    </aside>
+
+    <div class="content">
+      <!-- DASHBOARD -->
+      <section class="page active" id="page-dashboard">
+        <div class="section">
+          <div class="section-head"><div><h2>Visão geral do projeto</h2><p>Acompanhe a evolução de cada etapa antes da entrega.</p></div><button class="btn" id="refreshDashboard">Atualizar status</button></div>
+          <div class="status-grid" id="statusGrid"></div>
+        </div>
+        <div class="section">
+          <h2>Validação técnica e documental</h2>
+          <div id="validationSummary" class="validation-list"></div>
+        </div>
+        <div class="section">
+          <h2>Fluxo recomendado</h2>
+          <div class="flow-grid">
+            <div class="flow-node"><strong>1</strong><span>Código PEI</span></div><div class="flow-arrow">→</div>
+            <div class="flow-node"><strong>2</strong><span>Situação-problema</span></div><div class="flow-arrow">→</div>
+            <div class="flow-node"><strong>3</strong><span>Escolha do acionamento</span></div><div class="flow-arrow">→</div>
+            <div class="flow-node"><strong>4</strong><span>Cálculos</span></div><div class="flow-arrow">→</div>
+            <div class="flow-node"><strong>5</strong><span>CCM / QGBT / SE</span></div><div class="flow-arrow">→</div>
+            <div class="flow-node"><strong>6</strong><span>Memoriais</span></div><div class="flow-arrow">→</div>
+            <div class="flow-node"><strong>7</strong><span>PDF final</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROJETO -->
+      <section class="page" id="page-projeto">
+        <div class="section">
+          <h2>Código da equipe / empresa projetista</h2>
+          <div class="callout orange"><strong>O código é a chave do projeto.</strong> O mesmo código sempre gera a mesma situação-problema, cargas, distâncias, condições de processo e premissas elétricas para a empresa fictícia formada pelo trio.</div>
+          <div class="grid4 align-end">
+            <div class="field span2"><label for="projectCode">Código entregue pelo docente ao trio</label><input id="projectCode" placeholder="Ex.: PEI-2026-T01" autocomplete="off"></div>
+            <div class="field"><label for="revision">Revisão</label><select id="revision"><option>REV00</option><option>REV01</option><option>REV02</option><option>REV03</option></select></div>
+            <button class="btn primary" id="generateProjectBtn">Gerar / restaurar cargas</button>
+          </div>
+          <div id="generatedProjectInfo" class="generated-info"></div>
+        </div>
+
+        <div class="section">
+          <h2>Empresa projetista fictícia e equipe técnica</h2>
+          <div class="callout"><strong>O trio representa uma empresa de engenharia.</strong> Os três integrantes devem registrar sua participação no desenvolvimento. Um integrante será indicado como responsável técnico da equipe para fins didáticos.</div>
+          <div class="grid4">
+            <div class="field span2"><label>Razão social fictícia da empresa projetista</label><input id="teamCompanyName" data-state="team.companyName" placeholder="Ex.: Norte Engenharia & Automação Ltda."></div>
+            <div class="field"><label>Nome fantasia</label><input id="teamTradeName" data-state="team.tradeName" placeholder="Ex.: NorteTech Engenharia"></div>
+            <div class="field"><label>CNPJ fictício</label><input id="teamCnpj" data-state="team.cnpj" placeholder="00.000.000/0001-00"></div>
+            <div class="field"><label>Turma</label><input id="teamClass" data-state="team.className" placeholder="Ex.: ELETRO-2026-A"></div>
+            <div class="field"><label>Cidade / UF da empresa</label><input id="teamCity" data-state="team.city" placeholder="Rio Branco - AC"></div>
+            <div class="field span2"><label>E-mail fictício da empresa</label><input id="teamEmail" data-state="team.email" placeholder="projetos@empresa-ficticia.com"></div>
+          </div>
+          <h3>Integrantes e participação no projeto</h3>
+          <div class="team-grid">
+            <article class="member-card">
+              <span class="badge">Integrante 1</span>
+              <div class="field"><label>Nome do aluno</label><input id="member1Name" data-state="team.members.0.name"></div>
+              <div class="field"><label>Número / matrícula</label><input id="member1Number" data-state="team.members.0.number"></div>
+              <div class="field"><label>Função no projeto</label><input id="member1Role" data-state="team.members.0.role" placeholder="Ex.: Coordenação e QGBT"></div>
+              <div class="field"><label>Participação (%)</label><input id="member1Participation" data-state="team.members.0.participation" type="number" min="0" max="100" step="1"></div>
+              <div class="field"><label>Responsabilidades / entregas</label><textarea id="member1Responsibilities" data-state="team.members.0.responsibilities" placeholder="Descreva as etapas sob responsabilidade deste integrante."></textarea></div>
+            </article>
+            <article class="member-card">
+              <span class="badge">Integrante 2</span>
+              <div class="field"><label>Nome do aluno</label><input id="member2Name" data-state="team.members.1.name"></div>
+              <div class="field"><label>Número / matrícula</label><input id="member2Number" data-state="team.members.1.number"></div>
+              <div class="field"><label>Função no projeto</label><input id="member2Role" data-state="team.members.1.role" placeholder="Ex.: CCM e acionamentos"></div>
+              <div class="field"><label>Participação (%)</label><input id="member2Participation" data-state="team.members.1.participation" type="number" min="0" max="100" step="1"></div>
+              <div class="field"><label>Responsabilidades / entregas</label><textarea id="member2Responsibilities" data-state="team.members.1.responsibilities" placeholder="Descreva as etapas sob responsabilidade deste integrante."></textarea></div>
+            </article>
+            <article class="member-card">
+              <span class="badge">Integrante 3</span>
+              <div class="field"><label>Nome do aluno</label><input id="member3Name" data-state="team.members.2.name"></div>
+              <div class="field"><label>Número / matrícula</label><input id="member3Number" data-state="team.members.2.number"></div>
+              <div class="field"><label>Função no projeto</label><input id="member3Role" data-state="team.members.2.role" placeholder="Ex.: Subestação, SPDA e documentação"></div>
+              <div class="field"><label>Participação (%)</label><input id="member3Participation" data-state="team.members.2.participation" type="number" min="0" max="100" step="1"></div>
+              <div class="field"><label>Responsabilidades / entregas</label><textarea id="member3Responsibilities" data-state="team.members.2.responsibilities" placeholder="Descreva as etapas sob responsabilidade deste integrante."></textarea></div>
+            </article>
+          </div>
+          <div class="grid3 align-end team-footer">
+            <div class="field"><label>Responsável técnico da equipe (didático)</label><select id="responsibleMember"><option value="0">Integrante 1</option><option value="1">Integrante 2</option><option value="2">Integrante 3</option></select></div>
+            <div class="summary-card"><small>Participação declarada</small><strong id="teamParticipationTotal">0%</strong></div>
+            <div id="teamParticipationStatus" class="callout orange">A soma das participações deve totalizar 100%.</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Cliente industrial fictício</h2>
+          <div class="grid4">
+            <div class="field span2"><label>Razão social / nome do cliente fictício</label><input id="clientName" data-state="client.name" placeholder="Ex.: Amazônia Processos Industriais Ltda."></div>
+            <div class="field"><label>CNPJ fictício</label><input id="clientCnpj" data-state="client.cnpj" placeholder="00.000.000/0001-00"></div>
+            <div class="field"><label>Responsável do cliente</label><input id="clientContact" data-state="client.contact"></div>
+            <div class="field span2"><label>Endereço fictício</label><input id="clientAddress" data-state="client.address"></div>
+            <div class="field"><label>Cidade / UF</label><input id="clientCity" data-state="client.city" placeholder="Rio Branco - AC"></div>
+            <div class="field"><label>Atividade industrial</label><input id="clientActivity" data-state="client.activity" placeholder="Processamento / fabricação / serviços"></div>
+            <div class="field span4"><label>Necessidade apresentada pelo cliente</label><textarea id="clientNeed" data-state="client.need" placeholder="Descreva o que o cliente fictício solicitou para o projeto..."></textarea></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Premissas geradas pelo código</h2>
+          <div class="summary-grid" id="premiseCards"></div>
+          <div class="callout"><strong>Critério da UC:</strong> somente Partida Direta, Soft-starter e Inversor de Frequência. A partida direta é limitada a 5 cv em 220 V e 7,5 cv em 380 V.</div>
+        </div>
+      </section>
+
+      <!-- CARGAS -->
+      <section class="page" id="page-cargas">
+        <div class="section">
+          <div class="section-head"><div><h2>Cargas individuais geradas</h2><p>O código gera os dados elétricos e a condição de processo. O acionamento não vem pronto: será escolhido e justificado pela equipe na etapa Engenharia de Acionamentos.</p></div><button class="btn" id="exportLoadsCsv">Exportar CSV</button></div>
+          <div class="table-wrap"><table class="dense-table"><thead><tr>
+            <th>TAG</th><th>Equipamento</th><th>kW</th><th>cv</th><th>V</th><th>η</th><th>cosφ</th><th>Fu</th><th>FS</th><th>Dist. m</th><th>Partidas/h</th><th>Acionamento escolhido</th><th>I calculada A</th><th>Cabo mm²</th><th>Proteção</th><th>Contator / Drive</th><th>Relé / ajuste</th><th>Status</th>
+          </tr></thead><tbody id="loadTableBody"></tbody></table></div>
+          <div class="summary-grid" id="loadSummary"></div>
+        </div>
+        <div class="section">
+          <h2>Cargas auxiliares</h2>
+          <div class="table-wrap"><table><thead><tr><th>TAG</th><th>Descrição</th><th>Potência kW</th><th>Fu</th><th>FP</th><th>Tensão</th><th>Observação</th></tr></thead><tbody id="auxTableBody"></tbody></table></div>
+        </div>
+      </section>
+
+
+      <!-- ENGENHARIA DE ACIONAMENTOS -->
+      <section class="page" id="page-acionamentos">
+        <div class="section">
+          <div class="section-head">
+            <div><h2>Engenharia de acionamentos</h2><p>Analise a condição operacional de cada máquina, escolha o método de acionamento e apresente sua justificativa técnica.</p></div>
+            <div class="drive-toolbar"><span id="driveApiStatus" class="badge orange">Avaliação: verificando Vercel...</span><button class="btn primary" id="evaluateAllDrives">Avaliar decisões preenchidas</button></div>
+          </div>
+          <div class="callout orange"><strong>Você será avaliado pela decisão técnica.</strong> Os únicos métodos permitidos nesta UC são Partida Direta, Soft-starter e Inversor de Frequência. Partida direta fica limitada a <strong>5 cv em 220 V</strong> e <strong>7,5 cv em 380 V</strong>. A escolha deve considerar o processo, e não apenas a potência.</div>
+          <div class="summary-grid" id="driveSummary"></div>
+          <div class="callout"><strong>Como pensar:</strong> necessidade de variar velocidade, controlar vazão/produção, reduzir corrente de partida, reduzir esforços mecânicos, elevada inércia, número de partidas por hora, reversão e simplicidade da aplicação são fatores que devem aparecer na sua justificativa.</div>
+        </div>
+        <div id="driveEngineeringList" class="drive-list"></div>
+        <div class="section"><h2>Critério de avaliação</h2><div class="grid4"><div class="summary-card"><small>Escolha coerente com o processo</small><strong>8 pts</strong></div><div class="summary-card"><small>Limites técnicos da UC</small><strong>3 pts</strong></div><div class="summary-card"><small>Justificativa técnica</small><strong>4 pts</strong></div><div class="summary-card"><small>Especificação / parametrização</small><strong>5 pts</strong></div></div><p class="muted small">A pontuação exibida pela plataforma é uma <strong>sugestão técnica com evidências</strong>. A avaliação oficial e a nota final permanecem sujeitas à conferência e homologação do docente.</p></div>
+      </section>
+
+      <!-- CALCULADORA -->
+      <section class="page" id="page-calculadora">
+        <div class="section">
+          <h2>Calculadora elétrica industrial</h2>
+          <div class="callout green"><strong>Metodologia:</strong> calcule, confira a fórmula e depois clique em <em>Adicionar ao Memorial</em>. O registro ficará no memorial de cálculo com fórmula, substituição, resultado e unidade.</div>
+          <div class="grid3 calc-owner-row"><div class="field"><label>Responsável pelo cálculo / registro</label><select id="calcOwnerSelect"><option value="">Selecione o integrante</option></select></div><div class="callout"><strong>Rastreabilidade:</strong> cada cálculo adicionado ao memorial ficará identificado com o integrante responsável.</div></div>
+          <div class="calc-grid">
+            <article class="calc-card">
+              <h3>Corrente nominal do motor</h3>
+              <div class="formula">I = P / (√3 × V × η × cosφ)</div>
+              <div class="field"><label>Motor</label><select id="calcMotorSelect"></select></div>
+              <div class="calc-inputs grid2"><div class="field"><label>P (kW)</label><input id="cmP" type="number" step=".01"></div><div class="field"><label>V (V)</label><input id="cmV" type="number"></div><div class="field"><label>η</label><input id="cmEta" type="number" step=".001"></div><div class="field"><label>cosφ</label><input id="cmPf" type="number" step=".01"></div></div>
+              <div class="calc-result" id="cmResult">Resultado: —</div>
+              <div class="calc-actions"><button class="btn primary" id="cmCalc">Calcular</button><button class="btn" id="cmApply">Aplicar ao motor</button><button class="btn green" id="cmLog">Adicionar ao Memorial</button></div>
+            </article>
+
+            <article class="calc-card">
+              <h3>Potências P, S e Q</h3>
+              <div class="formula">S = P/cosφ &nbsp; | &nbsp; Q = P × tan(arccos(cosφ))</div>
+              <div class="grid2"><div class="field"><label>P (kW)</label><input id="cpP" type="number" step=".01"></div><div class="field"><label>cosφ</label><input id="cpPf" type="number" step=".01"></div></div>
+              <div class="calc-result" id="cpResult">Resultado: —</div>
+              <div class="calc-actions"><button class="btn primary" id="cpCalc">Calcular</button><button class="btn green" id="cpLog">Adicionar ao Memorial</button></div>
+            </article>
+
+            <article class="calc-card">
+              <h3>Demanda e transformador</h3>
+              <div class="formula">Sd = √(Pd² + Qd²) &nbsp; | &nbsp; Sproj = Sd × (1 + reserva)</div>
+              <div class="grid2"><div class="field"><label>Reserva (%)</label><input id="cdReserve" type="number" value="20"></div><div class="field"><label>FP auxiliar</label><input id="cdAuxPf" type="number" step=".01" value="0.95"></div></div>
+              <div class="calc-result" id="cdResult">Resultado: —</div>
+              <div class="calc-actions"><button class="btn primary" id="cdCalc">Calcular projeto</button><button class="btn" id="cdApply">Aplicar à subestação</button><button class="btn green" id="cdLog">Adicionar ao Memorial</button></div>
+            </article>
+
+            <article class="calc-card">
+              <h3>Ampacidade corrigida requerida</h3>
+              <div class="formula">Iz,tabela ≥ Ib / (Kt × Kg × Koutros)</div>
+              <div class="grid2"><div class="field"><label>Ib (A)</label><input id="caIb" type="number" step=".01"></div><div class="field"><label>Kt</label><input id="caKt" type="number" step=".01" value="0.96"></div><div class="field"><label>Kg</label><input id="caKg" type="number" step=".01" value="0.80"></div><div class="field"><label>K outros</label><input id="caKo" type="number" step=".01" value="1"></div></div>
+              <div class="calc-result" id="caResult">Resultado: —</div>
+              <div class="calc-actions"><button class="btn primary" id="caCalc">Calcular</button><button class="btn green" id="caLog">Adicionar ao Memorial</button></div>
+            </article>
+
+            <article class="calc-card">
+              <h3>Queda de tensão trifásica</h3>
+              <div class="formula">ΔV = √3 × I × L × (R cosφ + X senφ)</div>
+              <div class="grid3"><div class="field"><label>I (A)</label><input id="cvI" type="number" step=".01"></div><div class="field"><label>L (m)</label><input id="cvL" type="number" step=".1"></div><div class="field"><label>V (V)</label><input id="cvV" type="number"></div><div class="field"><label>R (Ω/km)</label><input id="cvR" type="number" step=".001"></div><div class="field"><label>X (Ω/km)</label><input id="cvX" type="number" step=".001" value="0.08"></div><div class="field"><label>cosφ</label><input id="cvPf" type="number" step=".01"></div></div>
+              <div class="calc-result" id="cvResult">Resultado: —</div>
+              <div class="calc-actions"><button class="btn primary" id="cvCalc">Calcular</button><button class="btn green" id="cvLog">Adicionar ao Memorial</button></div>
+            </article>
+
+            <article class="calc-card">
+              <h3>Transformador e curto-circuito</h3>
+              <div class="formula">In = S/(√3×V) &nbsp; | &nbsp; Icc ≈ In × 100/Z%</div>
+              <div class="grid3"><div class="field"><label>S (kVA)</label><input id="ctS" type="number" step=".1"></div><div class="field"><label>V secundária (V)</label><input id="ctV" type="number"></div><div class="field"><label>Z (%)</label><input id="ctZ" type="number" step=".1"></div></div>
+              <div class="calc-result" id="ctResult">Resultado: —</div>
+              <div class="calc-actions"><button class="btn primary" id="ctCalc">Calcular</button><button class="btn" id="ctApply">Aplicar SE/QGBT</button><button class="btn green" id="ctLog">Adicionar ao Memorial</button></div>
+            </article>
+
+            <article class="calc-card">
+              <h3>Banco de capacitores</h3>
+              <div class="formula">Qc = P × [tan(arccos fp₁) − tan(arccos fp₂)]</div>
+              <div class="grid3"><div class="field"><label>P (kW)</label><input id="cfP" type="number" step=".01"></div><div class="field"><label>FP atual</label><input id="cf1" type="number" step=".01"></div><div class="field"><label>FP desejado</label><input id="cf2" type="number" step=".01" value="0.95"></div></div>
+              <div class="calc-result" id="cfResult">Resultado: —</div>
+              <div class="calc-actions"><button class="btn primary" id="cfCalc">Calcular</button><button class="btn green" id="cfLog">Adicionar ao Memorial</button></div>
+            </article>
+
+            <article class="calc-card">
+              <h3>Método dos lúmens</h3>
+              <div class="formula">N = E × A / (Φ × UF × MF)</div>
+              <div class="grid3"><div class="field"><label>E (lux)</label><input id="clE" type="number"></div><div class="field"><label>Área (m²)</label><input id="clA" type="number" step=".1"></div><div class="field"><label>Fluxo (lm)</label><input id="clFlux" type="number"></div><div class="field"><label>UF</label><input id="clUf" type="number" step=".01" value="0.65"></div><div class="field"><label>MF</label><input id="clMf" type="number" step=".01" value="0.80"></div></div>
+              <div class="calc-result" id="clResult">Resultado: —</div>
+              <div class="calc-actions"><button class="btn primary" id="clCalc">Calcular</button><button class="btn green" id="clLog">Adicionar ao Memorial</button></div>
+            </article>
+
+            <article class="calc-card">
+              <h3>Condutor por curto-circuito</h3>
+              <div class="formula">S ≥ Icc × √t / k</div>
+              <div class="grid3"><div class="field"><label>Icc (A)</label><input id="csI" type="number"></div><div class="field"><label>Tempo t (s)</label><input id="csT" type="number" step=".01"></div><div class="field"><label>k</label><input id="csK" type="number" step="1" value="115"></div></div>
+              <div class="calc-result" id="csResult">Resultado: —</div>
+              <div class="calc-actions"><button class="btn primary" id="csCalc">Calcular</button><button class="btn green" id="csLog">Adicionar ao Memorial</button></div>
+            </article>
+
+            <article class="calc-card">
+              <h3>Resistência aproximada de uma haste</h3>
+              <div class="formula">R ≈ ρ/(2πL) × [ln(4L/d) − 1]</div>
+              <div class="grid3"><div class="field"><label>ρ (Ω·m)</label><input id="cgRho" type="number"></div><div class="field"><label>L (m)</label><input id="cgL" type="number" step=".1" value="2.4"></div><div class="field"><label>d (m)</label><input id="cgD" type="number" step=".001" value="0.015"></div></div>
+              <div class="calc-result" id="cgResult">Resultado: —</div>
+              <div class="calc-actions"><button class="btn primary" id="cgCalc">Calcular</button><button class="btn green" id="cgLog">Adicionar ao Memorial</button></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- QGBT -->
+      <section class="page" id="page-qgbt">
+        <div class="section">
+          <h2>Dimensionamento e especificação do QGBT</h2>
+          <div class="summary-grid" id="qgbtSummary"></div>
+          <div class="grid4">
+            <div class="field"><label>Corrente de projeto (A)</label><input id="qgbtIb" data-state="qgbt.ib" type="number" step=".01"></div>
+            <div class="field"><label>Disjuntor geral (A)</label><input id="qgbtBreaker" data-state="qgbt.breaker" type="number"></div>
+            <div class="field"><label>Icu / capacidade de interrupção (kA)</label><input id="qgbtIcu" data-state="qgbt.icu" type="number" step=".1"></div>
+            <div class="field"><label>Barramento principal (A)</label><input id="qgbtBus" data-state="qgbt.bus" type="number"></div>
+            <div class="field"><label>Alimentador principal (mm²)</label><input id="qgbtCable" data-state="qgbt.cable" type="number"></div>
+            <div class="field"><label>DPS adotado</label><input id="qgbtDps" data-state="qgbt.dps" placeholder="Tipo / classe / tensão"></div>
+            <div class="field"><label>Barra de neutro</label><input id="qgbtNeutral" data-state="qgbt.neutral"></div>
+            <div class="field"><label>Barra PE</label><input id="qgbtPe" data-state="qgbt.pe"></div>
+            <div class="field span2"><label>Critério de seletividade / coordenação</label><textarea id="qgbtSelectivity" data-state="qgbt.selectivity"></textarea></div>
+            <div class="field span2"><label>Observações do QGBT</label><textarea id="qgbtNotes" data-state="qgbt.notes"></textarea></div>
+          </div>
+        </div>
+        <div class="section"><h2>Planta / referência do sistema</h2><div class="image-card"><img src="assets/planta_fluxo.webp" alt="Planta industrial com fluxo elétrico"><div>Referência para compatibilização entre subestação, QGBT, CCM e cargas.</div></div></div>
+      </section>
+
+      <!-- CCM -->
+      <section class="page" id="page-ccm">
+        <div class="section">
+          <h2>Centro de Controle de Motores</h2>
+          <div class="image-card"><img src="assets/ccm.webp" alt="Layout didático do CCM"><div>O layout deve refletir os componentes e dados adotados no quadro abaixo.</div></div>
+          <div class="grid4 top-gap">
+            <div class="field"><label>Barramento do CCM (A)</label><input id="ccmBus" data-state="ccm.bus" type="number"></div>
+            <div class="field"><label>Icc do CCM (kA)</label><input id="ccmIcc" data-state="ccm.icc" type="number" step=".1"></div>
+            <div class="field"><label>Disjuntor geral do CCM (A)</label><input id="ccmMainBreaker" data-state="ccm.mainBreaker" type="number"></div>
+            <div class="field"><label>Grau de proteção IP</label><input id="ccmIp" data-state="ccm.ip" placeholder="Ex.: IP54"></div>
+            <div class="field span2"><label>Forma / segregação</label><input id="ccmForm" data-state="ccm.form"></div>
+            <div class="field span2"><label>Reserva física / expansão</label><input id="ccmReserve" data-state="ccm.reserve"></div>
+          </div>
+        </div>
+        <div class="section">
+          <h2>Gavetas e saídas do CCM</h2>
+          <div class="table-wrap"><table class="dense-table"><thead><tr><th>TAG</th><th>Motor</th><th>kW</th><th>I calc.</th><th>Acionamento</th><th>Cabo</th><th>Proteção</th><th>Contator / Drive</th><th>Relé / ajuste</th><th>Parâmetros do drive</th></tr></thead><tbody id="ccmTableBody"></tbody></table></div>
+        </div>
+      </section>
+
+      <!-- SUBESTACAO -->
+      <section class="page" id="page-subestacao">
+        <div class="section">
+          <h2>Subestação de entrada de energia</h2>
+          <div class="image-card"><img src="assets/subestacao.webp" alt="Layout didático da subestação"><div>Modelo didático para medição, proteção, transformação, QGBT, BEP e aterramento.</div></div>
+          <div class="callout"><strong>Referência:</strong> o aluno deve conferir a NDU vigente da Energisa aplicável ao fornecimento em tensão primária e as normas técnicas utilizadas no projeto.</div>
+          <div class="summary-grid" id="substationSummary"></div>
+          <div class="grid4">
+            <div class="field"><label>Transformador adotado (kVA)</label><input id="seTrafo" data-state="substation.trafo" type="number" step=".1"></div>
+            <div class="field"><label>Impedância Z (%)</label><input id="seZ" data-state="substation.z" type="number" step=".1"></div>
+            <div class="field"><label>I primária (A)</label><input id="seIp" data-state="substation.ip" type="number" step=".01"></div>
+            <div class="field"><label>I secundária (A)</label><input id="seIs" data-state="substation.is" type="number" step=".01"></div>
+            <div class="field"><label>Icc secundária (kA)</label><input id="seIcc" data-state="substation.icc" type="number" step=".01"></div>
+            <div class="field"><label>Disjuntor geral BT (A)</label><input id="seBtBreaker" data-state="substation.btBreaker" type="number"></div>
+            <div class="field"><label>TC — relação / classe</label><input id="seTc" data-state="substation.tc"></div>
+            <div class="field"><label>TP — relação / classe</label><input id="seTp" data-state="substation.tp"></div>
+            <div class="field"><label>Proteção MT</label><input id="seMtProtection" data-state="substation.mtProtection"></div>
+            <div class="field"><label>Para-raios MT</label><input id="seArrester" data-state="substation.arrester"></div>
+            <div class="field"><label>Condutor de aterramento (mm²)</label><input id="seGroundCable" data-state="substation.groundCable" type="number"></div>
+            <div class="field"><label>Número de hastes</label><input id="seRods" data-state="substation.rods" type="number"></div>
+            <div class="field span2"><label>Sistema de medição / SMF</label><textarea id="seMetering" data-state="substation.metering"></textarea></div>
+            <div class="field span2"><label>Observações da subestação</label><textarea id="seNotes" data-state="substation.notes"></textarea></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- LUMINOTECNICO -->
+      <section class="page" id="page-luminotecnico">
+        <div class="section">
+          <h2>Projeto luminotécnico</h2>
+          <div class="image-card"><img src="assets/luminotecnico.webp" alt="Planta para cálculo luminotécnico"><div>Base didática para cálculo por ambiente.</div></div>
+          <div class="formula top-gap">N = E × A / (Φ × UF × MF)</div>
+          <div class="table-wrap top-gap"><table><thead><tr><th>Ambiente</th><th>Área m²</th><th>E lux</th><th>Fluxo luminária lm</th><th>UF</th><th>MF</th><th>N calc.</th><th>N adot.</th><th>Potência W</th><th>Total W</th><th>Modelo / observação</th></tr></thead><tbody id="lightingTableBody"></tbody></table></div>
+        </div>
+      </section>
+
+      <!-- SPDA -->
+      <section class="page" id="page-spda">
+        <div class="section">
+          <h2>SPDA, BEP e sistema de aterramento</h2>
+          <div class="image-card"><img src="assets/spda_aterramento.webp" alt="Planta de SPDA, BEP e aterramento"><div>Registre os parâmetros adotados e a justificativa do projeto.</div></div>
+          <div class="grid4 top-gap">
+            <div class="field"><label>Classe / nível de proteção</label><input id="spdaClass" data-state="spda.class"></div>
+            <div class="field"><label>Método de captação</label><select id="spdaMethod" data-state="spda.method"><option value="">Selecione</option><option>Malha</option><option>Esfera rolante</option><option>Ângulo de proteção</option><option>Combinado</option></select></div>
+            <div class="field"><label>Número de captores</label><input id="spdaCaptors" data-state="spda.captors" type="number"></div>
+            <div class="field"><label>Número de descidas</label><input id="spdaDowns" data-state="spda.downs" type="number"></div>
+            <div class="field"><label>Seção das descidas (mm²)</label><input id="spdaDownSection" data-state="spda.downSection" type="number"></div>
+            <div class="field"><label>Condutor da malha (mm²)</label><input id="spdaGridSection" data-state="spda.gridSection" type="number"></div>
+            <div class="field"><label>Número de hastes</label><input id="spdaRods" data-state="spda.rods" type="number"></div>
+            <div class="field"><label>Comprimento haste (m)</label><input id="spdaRodLength" data-state="spda.rodLength" type="number" step=".1"></div>
+            <div class="field"><label>Resistividade ρ (Ω·m)</label><input id="spdaRho" data-state="spda.rho" type="number"></div>
+            <div class="field"><label>R aterramento adotada / medida (Ω)</label><input id="spdaResistance" data-state="spda.resistance" type="number" step=".01"></div>
+            <div class="field"><label>Ligação ao BEP (mm²)</label><input id="spdaBepSection" data-state="spda.bepSection" type="number"></div>
+            <div class="field"><label>DPS coordenados</label><input id="spdaDps" data-state="spda.dps"></div>
+            <div class="field span2"><label>Equipotencialização prevista</label><textarea id="spdaBonding" data-state="spda.bonding"></textarea></div>
+            <div class="field span2"><label>Critério / justificativa do SPDA</label><textarea id="spdaNotes" data-state="spda.notes"></textarea></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MATERIAIS -->
+      <section class="page" id="page-materiais">
+        <div class="section">
+          <div class="section-head"><div><h2>Lista de materiais e orçamento</h2><p>A plataforma pode criar uma lista-base usando as escolhas já registradas. O aluno complementa especificação, quantidade e preços.</p></div><div class="inline-actions"><button class="btn" id="autoMaterialsBtn">Atualizar do projeto</button><button class="btn primary" id="addMaterialBtn">Adicionar item</button></div></div>
+          <div class="table-wrap"><table class="materials-table"><thead><tr><th>Item</th><th>TAG</th><th>Descrição / especificação</th><th>Qtd.</th><th>Un.</th><th>Preço unitário</th><th>Total</th><th>Obs.</th><th></th></tr></thead><tbody id="materialsBody"></tbody></table></div>
+          <div class="budget-box"><div><span>Subtotal de materiais</span><strong id="materialsSubtotal">R$ 0,00</strong></div><div><label>Mão de obra / serviços (R$)<input id="laborCost" data-state="budget.labor" type="number" step=".01"></label></div><div><label>Outros custos (R$)<input id="otherCost" data-state="budget.other" type="number" step=".01"></label></div><div class="grand"><span>Total do projeto</span><strong id="projectGrandTotal">R$ 0,00</strong></div></div>
+        </div>
+      </section>
+
+      <!-- MEM CALC -->
+      <section class="page" id="page-memcalc">
+        <div class="section">
+          <div class="section-head"><div><h2>Memorial de cálculo</h2><p>Os cálculos registrados na Calculadora Industrial aparecem automaticamente aqui.</p></div><button class="btn danger" id="clearCalcLog">Limpar memorial</button></div>
+          <div id="calcLogList" class="calc-log"></div>
+        </div>
+      </section>
+
+      <!-- MEM DESC -->
+      <section class="page" id="page-memdesc">
+        <div class="section">
+          <div class="section-head"><div><h2>Memorial descritivo</h2><p>Os dados da empresa projetista, dos três integrantes, do cliente e do projeto alimentam o texto. Revise e complemente antes da entrega.</p></div><button class="btn primary" id="generateMemorialBtn">Gerar / atualizar texto</button></div>
+          <div class="callout orange"><strong>Atenção:</strong> atualizar o texto automático substitui o conteúdo atual das seções abaixo. Faça isso antes de personalizar a redação final.</div>
+          <div class="memorial-grid">
+            <div class="field"><label>1. Objetivo e escopo</label><textarea id="mdScope" data-state="memdesc.scope"></textarea></div>
+            <div class="field"><label>2. Características da instalação</label><textarea id="mdCharacteristics" data-state="memdesc.characteristics"></textarea></div>
+            <div class="field"><label>3. Fornecimento e subestação</label><textarea id="mdSubstation" data-state="memdesc.substation"></textarea></div>
+            <div class="field"><label>4. QGBT</label><textarea id="mdQgbt" data-state="memdesc.qgbt"></textarea></div>
+            <div class="field"><label>5. CCM e acionamentos</label><textarea id="mdCcm" data-state="memdesc.ccm"></textarea></div>
+            <div class="field"><label>6. Condutores, proteção e infraestrutura</label><textarea id="mdConductors" data-state="memdesc.conductors"></textarea></div>
+            <div class="field"><label>7. Iluminação</label><textarea id="mdLighting" data-state="memdesc.lighting"></textarea></div>
+            <div class="field"><label>8. SPDA, BEP e aterramento</label><textarea id="mdSpda" data-state="memdesc.spda"></textarea></div>
+            <div class="field"><label>9. Materiais e orçamento</label><textarea id="mdMaterials" data-state="memdesc.materials"></textarea></div>
+            <div class="field"><label>10. Inspeção, testes e conclusão</label><textarea id="mdConclusion" data-state="memdesc.conclusion"></textarea></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PRANCHAS -->
+      <section class="page" id="page-pranchas">
+        <div class="section">
+          <h2>Pranchas didáticas do projeto</h2>
+          <div class="drawing-grid">
+            <figure><img src="assets/planta_geral.webp" alt="Planta geral"><figcaption>PEI-01 • Planta baixa geral, máquinas, subestação, QGBT e CCM.</figcaption></figure>
+            <figure><img src="assets/planta_fluxo.webp" alt="Planta com fluxo"><figcaption>PEI-02 • Planta com fluxo produtivo e elétrico.</figcaption></figure>
+            <figure><img src="assets/ccm.webp" alt="Layout CCM"><figcaption>PEI-03 • Layout didático do CCM.</figcaption></figure>
+            <figure><img src="assets/subestacao.webp" alt="Layout subestação"><figcaption>PEI-04 • Layout didático da subestação.</figcaption></figure>
+            <figure><img src="assets/luminotecnico.webp" alt="Planta luminotécnica"><figcaption>PEI-05 • Planta para cálculo luminotécnico.</figcaption></figure>
+            <figure><img src="assets/spda_aterramento.webp" alt="SPDA e aterramento"><figcaption>PEI-06 • SPDA, BEP e malha de aterramento.</figcaption></figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- ENTREGA -->
+      <section class="page" id="page-entrega">
+        <div class="section">
+          <h2>Conferência final</h2>
+          <div id="finalChecklist" class="checklist"></div>
+        </div>
+        <div class="section">
+          <h2>Controle de revisão</h2>
+          <div class="grid4">
+            <div class="field"><label>Revisão atual</label><input id="finalRevision" readonly></div>
+            <div class="field"><label>Data da emissão</label><input id="issueDate" data-state="revision.issueDate" type="date"></div>
+            <div class="field span2"><label>Descrição da revisão</label><input id="revisionDescription" data-state="revision.description" placeholder="Emissão inicial / correções / atualização..."></div>
+          </div>
+        </div>
+        <div class="section final-actions">
+          <div><h2>Projeto completo</h2><p>O PDF será composto por capa da empresa projetista, equipe técnica e participação, dados do cliente, memorial descritivo, memória de cálculo com responsáveis, quadro de cargas, CCM, QGBT, subestação, luminotécnico, SPDA, lista de materiais, orçamento e pranchas.</p></div>
+          <div class="inline-actions"><button class="btn" id="previewReportBtn">Atualizar relatório</button><button class="btn" id="printBtn">Imprimir / salvar PDF</button><button class="btn primary big" id="pdfFinalBtn">Gerar projeto completo em PDF</button></div>
+        </div>
+        <div class="section"><h2>Resumo da entrega</h2><div id="deliverySummary"></div></div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<div id="printReport" class="report hidden" aria-hidden="true"></div>
+<script src="app.js"></script>
+</body>
+</html>
