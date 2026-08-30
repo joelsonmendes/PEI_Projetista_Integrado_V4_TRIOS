@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="PEI Projetista Integrado: plataforma didática completa para desenvolvimento do Projeto Elétrico Industrial.">
-<title>PEI Projetista Integrado V4 • Equipes | Projetos Elétricos Industriais</title>
+<meta name="description" content="Plataforma exclusiva dos trios para desenvolvimento do Projeto Elétrico Industrial. PEI Projetista • Alunos: plataforma didática completa para desenvolvimento do Projeto Elétrico Industrial.">
+<title>PEI Projetista • Alunos V4.4.3 • Equipes | Projetos Elétricos Industriais</title>
 <link rel="stylesheet" href="styles.css">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
@@ -13,12 +13,13 @@
   <div class="topbar-inner">
     <div class="brand">
       <img src="assets/senai_logo.webp" alt="SENAI">
-      <div><strong>PEI Projetista Integrado V4 • Equipes</strong><small>Projetos Elétricos Industriais • Plataforma da equipe</small></div>
+      <div><strong>PEI Projetista • Alunos V4.4.3 • Equipes</strong><small>Projetos Elétricos Industriais • Plataforma da equipe</small></div>
     </div>
     <div class="top-actions">
       <button class="btn" id="themeBtn">Tema</button>
       <button class="btn" id="saveBtn">Salvar</button>
-      <button class="btn" id="exportBtn">Exportar JSON</button>
+      <button class="btn" id="exportBtn">Salvar projeto JSON</button>
+      <button class="btn green" id="submitTeacherBtn">Gerar JSON de entrega</button>
       <label class="btn file-btn">Importar JSON<input id="importProject" type="file" accept=".json,application/json"></label>
       <button class="btn primary" id="pdfTopBtn">Gerar projeto PDF</button>
       <button class="btn danger" id="resetProjectBtn">Resetar projeto</button>
@@ -30,7 +31,7 @@
   <section class="hero">
     <div class="hero-kicker">Projeto em trio • empresa fictícia • ambiente único</div>
     <h1>Da empresa fictícia ao projeto elétrico industrial completo</h1>
-    <p>O trio forma uma empresa fictícia, recebe um código único, divide responsabilidades, escolhe e justifica os acionamentos, desenvolve os cálculos e entrega memorial descritivo, memória de cálculo, quadro de cargas, lista de materiais e o projeto completo em PDF.</p>
+    <p>Ambiente exclusivo do trio. A equipe forma uma empresa fictícia, recebe um código único do docente, divide responsabilidades, escolhe e justifica os acionamentos, desenvolve os cálculos e gera o projeto completo em PDF e o JSON de entrega.</p>
     <div class="hero-metrics">
       <div class="hero-stat"><strong id="heroCode">SEM CÓDIGO</strong><span>Projeto da equipe</span></div>
       <div class="hero-stat"><strong id="heroStudent">Equipe</strong><span>Empresa projetista</span></div>
@@ -194,7 +195,10 @@
           <div class="callout"><strong>Como pensar:</strong> necessidade de variar velocidade, controlar vazão/produção, reduzir corrente de partida, reduzir esforços mecânicos, elevada inércia, número de partidas por hora, reversão e simplicidade da aplicação são fatores que devem aparecer na sua justificativa.</div>
         </div>
         <div id="driveEngineeringList" class="drive-list"></div>
-        <div class="section"><h2>Critério de avaliação</h2><div class="grid4"><div class="summary-card"><small>Escolha coerente com o processo</small><strong>8 pts</strong></div><div class="summary-card"><small>Limites técnicos da UC</small><strong>3 pts</strong></div><div class="summary-card"><small>Justificativa técnica</small><strong>4 pts</strong></div><div class="summary-card"><small>Especificação / parametrização</small><strong>5 pts</strong></div></div><p class="muted small">A pontuação exibida pela plataforma é uma <strong>sugestão técnica com evidências</strong>. A avaliação oficial e a nota final permanecem sujeitas à conferência e homologação do docente.</p></div>
+        <div class="section"><h2>Orientação técnica</h2>
+      <div class="callout"><strong>Objetivo:</strong> justificar tecnicamente cada escolha de acionamento e registrar os parâmetros adotados. A nota oficial não é calculada nesta plataforma; a avaliação será realizada pelo docente a partir do JSON de entrega.</div>
+      <p class="muted small">Use a verificação técnica apenas para identificar incoerências e pontos que precisam ser revisados antes da entrega.</p>
+    </div>
       </section>
 
       <!-- CALCULADORA -->
@@ -292,8 +296,13 @@
       <section class="page" id="page-qgbt">
         <div class="section">
           <h2>Dimensionamento e especificação do QGBT</h2>
+          <div class="image-card"><img src="assets/qgbt.webp" alt="Layout didático revisado do QGBT"><div>Prancha revisada: L1, L2 e L3 em barramentos independentes, com N e PE separados. Os dados escolhidos pelo trio devem ser coerentes com este layout.</div></div>
+          <div class="callout orange"><strong>Regra didática dos barramentos:</strong> não existe interligação entre L1, L2 e L3. Cada fase permanece isolada e possui derivações próprias para os disjuntores. N e PE ficam em barras distintas.</div>
           <div class="summary-grid" id="qgbtSummary"></div>
           <div class="grid4">
+            <div class="field"><label>Fabricante do QGBT / disjuntor geral</label><input id="qgbtManufacturer" data-state="qgbt.manufacturer" placeholder="Ex.: WEG, Schneider, ABB"></div>
+            <div class="field"><label>Modelo / linha do disjuntor geral</label><input id="qgbtModel" data-state="qgbt.model" placeholder="Modelo pesquisado"></div>
+            <div class="field"><label>Fonte / catálogo consultado</label><input id="qgbtSource" data-state="qgbt.source" placeholder="Catálogo, página ou referência"></div>
             <div class="field"><label>Corrente de projeto (A)</label><input id="qgbtIb" data-state="qgbt.ib" type="number" step=".01"></div>
             <div class="field"><label>Disjuntor geral (A)</label><input id="qgbtBreaker" data-state="qgbt.breaker" type="number"></div>
             <div class="field"><label>Icu / capacidade de interrupção (kA)</label><input id="qgbtIcu" data-state="qgbt.icu" type="number" step=".1"></div>
@@ -313,8 +322,11 @@
       <section class="page" id="page-ccm">
         <div class="section">
           <h2>Centro de Controle de Motores</h2>
-          <div class="image-card"><img src="assets/ccm.webp" alt="Layout didático do CCM"><div>O layout deve refletir os componentes e dados adotados no quadro abaixo.</div></div>
+          <div class="image-card"><img src="assets/ccm.webp" alt="Layout didático revisado do CCM"><div>Prancha revisada com barramentos de fase independentes e gavetas de partida direta, WEG SSW07 e WEG CFW500.</div></div>
+          <div class="callout orange"><strong>Regra didática dos barramentos:</strong> as fases L1, L2 e L3 não são interligadas entre si. Cada gaveta recebe derivações independentes do barramento principal.</div>
           <div class="grid4 top-gap">
+            <div class="field"><label>Fabricante / linha do CCM</label><input id="ccmManufacturer" data-state="ccm.manufacturer" placeholder="Ex.: WEG"></div>
+            <div class="field"><label>Fonte / catálogo consultado</label><input id="ccmSource" data-state="ccm.source" placeholder="Catálogo, página ou referência"></div>
             <div class="field"><label>Barramento do CCM (A)</label><input id="ccmBus" data-state="ccm.bus" type="number"></div>
             <div class="field"><label>Icc do CCM (kA)</label><input id="ccmIcc" data-state="ccm.icc" type="number" step=".1"></div>
             <div class="field"><label>Disjuntor geral do CCM (A)</label><input id="ccmMainBreaker" data-state="ccm.mainBreaker" type="number"></div>
@@ -332,12 +344,25 @@
       <!-- SUBESTACAO -->
       <section class="page" id="page-subestacao">
         <div class="section">
-          <h2>Subestação de entrada de energia</h2>
-          <div class="image-card"><img src="assets/subestacao.webp" alt="Layout didático da subestação"><div>Modelo didático para medição, proteção, transformação, QGBT, BEP e aterramento.</div></div>
-          <div class="callout"><strong>Referência:</strong> o aluno deve conferir a NDU vigente da Energisa aplicável ao fornecimento em tensão primária e as normas técnicas utilizadas no projeto.</div>
+          <h2>Subestação aérea Energisa — até 300 kVA</h2>
+          <div class="image-card"><img src="assets/subestacao.webp" alt="Referência didática de subestação"><div>A imagem é apoio didático. O projeto desta prova deve ser compatibilizado com a NDU 002 da Energisa e enquadrado como subestação aérea até 300 kVA.</div></div>
+          <div class="callout orange"><strong>Escopo obrigatório da prova:</strong> concessionária Energisa, subestação <strong>aérea</strong> e potência máxima de <strong>300 kVA</strong>. Se a potência requerida superar 300 kVA, o projeto está fora do escopo e deve ser revisado.</div>
+          <div class="callout"><strong>NDU 002:</strong> em 30/08/2026 a versão 5.2 permanece vigente até 28/09/2026. A versão 6.0 entra em vigor em 29/09/2026 e possui anexos específicos para projeto de SE aérea até 300 kVA e modelos de pranchas de 75 a 300 kVA.</div>
           <div class="summary-grid" id="substationSummary"></div>
+          <h3>Enquadramento NDU</h3>
           <div class="grid4">
-            <div class="field"><label>Transformador adotado (kVA)</label><input id="seTrafo" data-state="substation.trafo" type="number" step=".1"></div>
+            <div class="field"><label>Concessionária</label><input data-state="substation.utility" value="Energisa" readonly></div>
+            <div class="field"><label>Tipo de subestação</label><input data-state="substation.type" value="Aérea" readonly></div>
+            <div class="field"><label>Versão NDU utilizada</label><select id="seNduVersion" data-state="substation.nduVersion"><option>NDU 002 v5.2 — vigente até 28/09/2026</option><option>NDU 002 v6.0 — vigente a partir de 29/09/2026</option></select></div>
+            <div class="field"><label>Anexo / prancha consultada</label><input id="seNduAnnex" data-state="substation.nduAnnex" placeholder="Ex.: Anexo SE aérea / NDU 002.1 / 002.2"></div>
+            <div class="field"><label>Data da consulta</label><input id="seNduDate" data-state="substation.nduDate" type="date"></div>
+            <div class="field"><label>Fabricante do transformador</label><input id="seManufacturer" data-state="substation.manufacturer" placeholder="Fabricante pesquisado"></div>
+            <div class="field"><label>Modelo / referência do transformador</label><input id="seModel" data-state="substation.model" placeholder="Modelo / catálogo"></div>
+            <div class="field"><label>Fonte / catálogo consultado</label><input id="seSource" data-state="substation.source" placeholder="Referência da pesquisa"></div>
+          </div>
+          <h3>Dimensionamento elétrico</h3>
+          <div class="grid4">
+            <div class="field"><label>Transformador adotado (kVA)</label><select id="seTrafo" data-state="substation.trafo"><option value="">Selecione</option><option value="75">75 kVA</option><option value="112.5">112,5 kVA</option><option value="150">150 kVA</option><option value="225">225 kVA</option><option value="300">300 kVA</option></select></div>
             <div class="field"><label>Impedância Z (%)</label><input id="seZ" data-state="substation.z" type="number" step=".1"></div>
             <div class="field"><label>I primária (A)</label><input id="seIp" data-state="substation.ip" type="number" step=".01"></div>
             <div class="field"><label>I secundária (A)</label><input id="seIs" data-state="substation.is" type="number" step=".01"></div>
@@ -345,12 +370,12 @@
             <div class="field"><label>Disjuntor geral BT (A)</label><input id="seBtBreaker" data-state="substation.btBreaker" type="number"></div>
             <div class="field"><label>TC — relação / classe</label><input id="seTc" data-state="substation.tc"></div>
             <div class="field"><label>TP — relação / classe</label><input id="seTp" data-state="substation.tp"></div>
-            <div class="field"><label>Proteção MT</label><input id="seMtProtection" data-state="substation.mtProtection"></div>
+            <div class="field"><label>Proteção MT / chave</label><input id="seMtProtection" data-state="substation.mtProtection"></div>
             <div class="field"><label>Para-raios MT</label><input id="seArrester" data-state="substation.arrester"></div>
             <div class="field"><label>Condutor de aterramento (mm²)</label><input id="seGroundCable" data-state="substation.groundCable" type="number"></div>
             <div class="field"><label>Número de hastes</label><input id="seRods" data-state="substation.rods" type="number"></div>
             <div class="field span2"><label>Sistema de medição / SMF</label><textarea id="seMetering" data-state="substation.metering"></textarea></div>
-            <div class="field span2"><label>Observações da subestação</label><textarea id="seNotes" data-state="substation.notes"></textarea></div>
+            <div class="field span2"><label>Observações / compatibilização com NDU</label><textarea id="seNotes" data-state="substation.notes"></textarea></div>
           </div>
         </div>
       </section>
@@ -359,9 +384,9 @@
       <section class="page" id="page-luminotecnico">
         <div class="section">
           <h2>Projeto luminotécnico</h2>
-          <div class="image-card"><img src="assets/luminotecnico.webp" alt="Planta para cálculo luminotécnico"><div>Base didática para cálculo por ambiente.</div></div>
+          <div class="image-card"><img src="assets/luminotecnico.webp" alt="Planta para cálculo luminotécnico"><div>Planta revisada com infraestrutura em perfilado, fileiras de luminárias e dados geométricos do galpão 36,00 m × 24,00 m, pé-direito 6,00 m.</div></div>
           <div class="formula top-gap">N = E × A / (Φ × UF × MF)</div>
-          <div class="table-wrap top-gap"><table><thead><tr><th>Ambiente</th><th>Área m²</th><th>E lux</th><th>Fluxo luminária lm</th><th>UF</th><th>MF</th><th>N calc.</th><th>N adot.</th><th>Potência W</th><th>Total W</th><th>Modelo / observação</th></tr></thead><tbody id="lightingTableBody"></tbody></table></div>
+          <div class="table-wrap top-gap"><table><thead><tr><th>Ambiente</th><th>Área m²</th><th>E lux</th><th>Fluxo luminária lm</th><th>UF</th><th>MF</th><th>N calc.</th><th>N adot.</th><th>Potência W</th><th>Total W</th><th>Fabricante</th><th>Modelo / observação</th><th>Fonte / catálogo</th></tr></thead><tbody id="lightingTableBody"></tbody></table></div>
         </div>
       </section>
 
@@ -389,6 +414,7 @@
         </div>
       </section>
 
+      <section class="page" id="page-infraestrutura-extra" style="display:none"></section>
       <!-- MATERIAIS -->
       <section class="page" id="page-materiais">
         <div class="section">
@@ -433,10 +459,12 @@
           <div class="drawing-grid">
             <figure><img src="assets/planta_geral.webp" alt="Planta geral"><figcaption>PEI-01 • Planta baixa geral, máquinas, subestação, QGBT e CCM.</figcaption></figure>
             <figure><img src="assets/planta_fluxo.webp" alt="Planta com fluxo"><figcaption>PEI-02 • Planta com fluxo produtivo e elétrico.</figcaption></figure>
-            <figure><img src="assets/ccm.webp" alt="Layout CCM"><figcaption>PEI-03 • Layout didático do CCM.</figcaption></figure>
-            <figure><img src="assets/subestacao.webp" alt="Layout subestação"><figcaption>PEI-04 • Layout didático da subestação.</figcaption></figure>
-            <figure><img src="assets/luminotecnico.webp" alt="Planta luminotécnica"><figcaption>PEI-05 • Planta para cálculo luminotécnico.</figcaption></figure>
-            <figure><img src="assets/spda_aterramento.webp" alt="SPDA e aterramento"><figcaption>PEI-06 • SPDA, BEP e malha de aterramento.</figcaption></figure>
+            <figure><img src="assets/qgbt.webp" alt="Layout QGBT"><figcaption>PEI-03 • Layout revisado do QGBT — barramentos independentes.</figcaption></figure>
+            <figure><img src="assets/ccm.webp" alt="Layout CCM"><figcaption>PEI-04 • Layout revisado do CCM — barramentos independentes e gavetas de acionamento.</figcaption></figure>
+            <figure><img src="assets/infraestrutura.webp" alt="Infraestrutura eletrocalhas"><figcaption>PEI-05 • Planta de eletrocalhas, descidas e distâncias CCM → máquinas para queda de tensão de 2%.</figcaption></figure>
+            <figure><img src="assets/subestacao.webp" alt="Layout subestação"><figcaption>PEI-06 • Subestação — referência didática; projeto aéreo conforme NDU Energisa até 300 kVA.</figcaption></figure>
+            <figure><img src="assets/luminotecnico.webp" alt="Planta luminotécnica"><figcaption>PEI-07 • Planta luminotécnica com infraestrutura em perfilado.</figcaption></figure>
+            <figure><img src="assets/spda_aterramento.webp" alt="SPDA e aterramento"><figcaption>PEI-08 • SPDA, BEP e malha de aterramento.</figcaption></figure>
           </div>
         </div>
       </section>
