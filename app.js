@@ -3,7 +3,21 @@
 const $ = id => document.getElementById(id);
 const qsa = sel => [...document.querySelectorAll(sel)];
 const CV_TO_KW = 0.7355;
-const STORAGE_KEY = 'pei_projetista_integrado_v4_trios';
+// Potências nominais comerciais usuais de motores: não converter kW→cv apenas por divisão.
+// A plataforma usa o par nominal de placa (kW / cv), evitando valores irreais como 25,2 cv.
+const MOTOR_RATINGS = [
+  {kw:1.5,cv:2},{kw:2.2,cv:3},{kw:3,cv:4},{kw:3.7,cv:5},{kw:4,cv:5.5},
+  {kw:5.5,cv:7.5},{kw:7.5,cv:10},{kw:11,cv:15},{kw:15,cv:20},{kw:18.5,cv:25},
+  {kw:22,cv:30},{kw:30,cv:40},{kw:37,cv:50},{kw:45,cv:60},{kw:55,cv:75},{kw:75,cv:100}
+];
+const nominalCvFromKw = kw => {
+  const k=Number(kw);
+  const exact=MOTOR_RATINGS.find(r=>Math.abs(r.kw-k)<0.001);
+  if(exact) return exact.cv;
+  // Para valores externos/importados, aproxima para a potência nominal comercial mais próxima.
+  return MOTOR_RATINGS.reduce((best,r)=>Math.abs(r.kw-k)<Math.abs(best.kw-k)?r:best,MOTOR_RATINGS[0]).cv;
+};
+const STORAGE_KEY = 'pei_projetista_integrado_v4_1_trios';
 const TRAFO_STD = [75,112.5,150,225,300,500,750,1000,1500];
 
 const money = n => Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
@@ -39,7 +53,7 @@ const lightingBase = [
 
 function initialState(){
   return {
-    schema:'PEI-PROJETISTA-INTEGRADO-4.0-TRIOS',
+    schema:'PEI-PROJETISTA-INTEGRADO-4.1-TRIOS',
     meta:{code:'',generated:false,generatedAt:'',voltage:380,primary:13800,frequency:60,ambient:35,grouping:3,tempFactor:.96,groupFactor:.70,reserve:20,trafoZ:5,subToQgbt:30,qgbtToCcm:20,validation:''},
     identity:{studentName:'',studentClass:'',studentNumber:''},
     team:{companyName:'',tradeName:'',cnpj:'',className:'',city:'Rio Branco - AC',email:'',responsibleIndex:0,members:[
@@ -68,7 +82,7 @@ function normalizeState(data){
   merged.team={...base.team,...(data?.team||{})};
   merged.team.members=base.team.members.map((m,i)=>({...m,...(data?.team?.members?.[i]||{})}));
   merged.driveAssessment={...base.driveAssessment,...(data?.driveAssessment||{})};
-  merged.motors=(data?.motors||[]).map((m,i)=>({...m,processCondition:m.processCondition||'Projeto importado de versão anterior: analise e registre a condição operacional.',speedRange:m.speedRange||'A definir',speedControl:m.speedControl??false,inertia:m.inertia||'A definir',startNeed:m.startNeed||'A definir',torqueDemand:m.torqueDemand||'A definir',objective:m.objective||'Revisar requisito do processo',justification:m.justification||'',driveConfig:m.driveConfig||{},driveEvaluation:m.driveEvaluation||null}));
+  merged.motors=(data?.motors||[]).map((m,i)=>({...m,cv:nominalCvFromKw(m.power),processCondition:m.processCondition||'Projeto importado de versão anterior: analise e registre a condição operacional.',speedRange:m.speedRange||'A definir',speedControl:m.speedControl??false,inertia:m.inertia||'A definir',startNeed:m.startNeed||'A definir',torqueDemand:m.torqueDemand||'A definir',objective:m.objective||'Revisar requisito do processo',justification:m.justification||'',driveConfig:m.driveConfig||{},driveEvaluation:m.driveEvaluation||null}));
   return merged;
 }
 
@@ -149,7 +163,7 @@ function generateFromCode(code){
     const power=pick(r,motorPowerCandidates(profile,voltage));
     const chars=motorChars(r,power); const scenario=scenarioForMotor(profile,r,power,voltage);
     return {
-      ...profile,...scenario,power,cv:+(power/CV_TO_KW).toFixed(1),voltage,eta:chars.eta,pf:chars.pf,
+      ...profile,...scenario,power,cv:nominalCvFromKw(power),voltage,eta:chars.eta,pf:chars.pf,
       use:pick(r,[.65,.70,.75,.80,.85,.90]),service:pick(r,[1,1,1.15]),distance:between(r,28,115,2),
       install:pick(r,['B1 — eletroduto aparente','B2 — eletroduto embutido','E — cabo multipolar em bandeja','F — cabos unipolares em bandeja']),
       method:'',justification:'',current:'',cable:'',breaker:'',device:'',overload:'',driveParams:'',notes:'',

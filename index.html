@@ -162,7 +162,7 @@
         <div class="section">
           <h2>Premissas geradas pelo código</h2>
           <div class="summary-grid" id="premiseCards"></div>
-          <div class="callout"><strong>Critério da UC:</strong> somente Partida Direta, Soft-starter e Inversor de Frequência. A partida direta é limitada a 5 cv em 220 V e 7,5 cv em 380 V.</div>
+          <div class="callout"><strong>Critério da UC:</strong> somente Partida Direta, Soft-starter e Inversor de Frequência. A partida direta é limitada a 5 cv em 220 V e 7,5 cv em 380 V.</div><div class="callout orange"><strong>Potência mecânica nominal:</strong> a plataforma utiliza pares comerciais de placa kW/cv (ex.: 2,2 kW = 3 cv; 11 kW = 15 cv; 18,5 kW = 25 cv). Não é usada a conversão decimal simples que gerava valores como 25,2 cv.</div>
         </div>
       </section>
 
@@ -171,7 +171,7 @@
         <div class="section">
           <div class="section-head"><div><h2>Cargas individuais geradas</h2><p>O código gera os dados elétricos e a condição de processo. O acionamento não vem pronto: será escolhido e justificado pela equipe na etapa Engenharia de Acionamentos.</p></div><button class="btn" id="exportLoadsCsv">Exportar CSV</button></div>
           <div class="table-wrap"><table class="dense-table"><thead><tr>
-            <th>TAG</th><th>Equipamento</th><th>kW</th><th>cv</th><th>V</th><th>η</th><th>cosφ</th><th>Fu</th><th>FS</th><th>Dist. m</th><th>Partidas/h</th><th>Acionamento escolhido</th><th>I calculada A</th><th>Cabo mm²</th><th>Proteção</th><th>Contator / Drive</th><th>Relé / ajuste</th><th>Status</th>
+            <th>TAG</th><th>Equipamento</th><th>kW nominal</th><th>cv nominal</th><th>V</th><th>η</th><th>cosφ</th><th>Fu</th><th>FS</th><th>Dist. m</th><th>Partidas/h</th><th>Acionamento escolhido</th><th>I calculada A</th><th>Cabo mm²</th><th>Proteção</th><th>Contator / Drive</th><th>Relé / ajuste</th><th>Status</th>
           </tr></thead><tbody id="loadTableBody"></tbody></table></div>
           <div class="summary-grid" id="loadSummary"></div>
         </div>

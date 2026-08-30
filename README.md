@@ -1,3 +1,7 @@
+# Atualização V4.1 — potências nominais comerciais
+
+A geração das cargas passou a utilizar pares nominais comerciais de motores em kW/cv. Exemplos: 2,2 kW = 3 cv; 4,0 kW = 5,5 cv; 5,5 kW = 7,5 cv; 11 kW = 15 cv; 18,5 kW = 25 cv; 22 kW = 30 cv. Projetos JSON importados de versões anteriores também têm o valor de cv normalizado pelo kW nominal.
+
 # PEI Projetista Integrado V4 — Projeto em Trio / Empresa Fictícia
 
 Esta versão foi preparada para avaliação em **trios**. Cada trio representa uma **empresa projetista fictícia** e recebe um único código PEI.
