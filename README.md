@@ -1,4 +1,4 @@
-# PEI ALUNOS • TRIOS V4.4
+# PEI ALUNOS • TRIOS V4.4.1
 
 Plataforma dedicada exclusivamente aos trios de alunos da UC Projetos Elétricos Industriais.
 
@@ -42,3 +42,10 @@ Na Vercel:
 - Output Directory: vazio
 
 A função `/api/evaluate-drive` fornece somente feedback técnico de coerência dos acionamentos.
+
+
+## Correção V4.4.1
+- Corrigido erro `refreshTeamUi is not defined`, que interrompia a inicialização e fazia o menu não responder.
+- Restauradas as funções de interface da equipe e do módulo Engenharia de Acionamentos.
+- Removida a dependência externa do html2pdf via CDN para evitar avisos de Tracking Prevention no Edge.
+- O botão de PDF usa a impressão nativa do navegador; escolha **Salvar como PDF**.
